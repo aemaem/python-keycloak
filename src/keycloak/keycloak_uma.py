@@ -447,8 +447,7 @@ class KeycloakUMA:
             ("response_mode", "decision"),
             ("audience", self.connection.client_id),
         ]
-        for permission in permissions:
-            payload.append(("permission", str(permission)))
+        payload.extend([("permission", str(p)) for p in permissions])
 
         if extra_payload and isinstance(extra_payload, dict):
             for k, v in extra_payload.items():
@@ -481,7 +480,7 @@ class KeycloakUMA:
         connection.add_param_headers("Content-Type", "application/x-www-form-urlencoded")
         data_raw = connection.raw_post(
             self.uma_well_known["token_endpoint"],
-            data="&".join(["{}={}".format(k, v) for k, v in payload]),
+            data="&".join([f"{k}={v}" for k, v in payload]),
         )
         try:
             data = raise_error_from_response(data_raw, KeycloakPostError)
@@ -950,8 +949,7 @@ class KeycloakUMA:
             ("response_mode", "decision"),
             ("audience", self.connection.client_id),
         ]
-        for permission in permissions:
-            payload.append(("permission", str(permission)))
+        payload.extend([("permission", str(p)) for p in permissions])
 
         if extra_payload and isinstance(extra_payload, dict):
             for k, v in extra_payload.items():
@@ -984,7 +982,7 @@ class KeycloakUMA:
         connection.add_param_headers("Content-Type", "application/x-www-form-urlencoded")
         data_raw = await connection.a_raw_post(
             (await self.a_uma_well_known)["token_endpoint"],
-            data="&".join(["{}={}".format(k, v) for k, v in payload]),
+            data="&".join([f"{k}={v}" for k, v in payload]),
         )
         try:
             data = raise_error_from_response(data_raw, KeycloakPostError)
