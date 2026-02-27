@@ -619,8 +619,24 @@ async def test_a_uma_access(uma: KeycloakUMA) -> None:
     assert await uma.a_permissions_check(token["access_token"], permissions)
 
     permissions.append(UMAPermission(resource="not valid"))
+    assert await uma.a_permissions_check(token["access_token"], permissions)
+
+    permissions = [UMAPermission(resource="not valid")]
+    assert not await uma.permissions_check(token["access_token"], permissions)
+
+    resource_without_a_policy = {
+        "name": "test_without_policy",
+        "scopes": ["read", "write"],
+        "type": "urn:test-no-policy",
+        "ownerManagedAccess": True,
+    }
+    resource_no_policy = await uma.a_resource_set_create(resource_without_a_policy)
+
+    permissions = [UMAPermission(resource=resource_without_a_policy["name"])]
     assert not await uma.a_permissions_check(token["access_token"], permissions)
-    uma.resource_set_delete(resource["_id"])
+
+    await uma.a_resource_set_delete(resource["_id"])
+    await uma.a_resource_set_delete(resource_no_policy["_id"])
 
 
 @pytest.mark.asyncio
