@@ -292,8 +292,24 @@ def test_uma_access(uma: KeycloakUMA) -> None:
     assert uma.permissions_check(token["access_token"], permissions)
 
     permissions.append(UMAPermission(resource="not valid"))
+    assert uma.permissions_check(token["access_token"], permissions)
+
+    permissions = [UMAPermission(resource="not valid")]
     assert not uma.permissions_check(token["access_token"], permissions)
+
+    resource_without_a_policy = {
+        "name": "test_without_policy",
+        "scopes": ["read", "write"],
+        "type": "urn:test-no-policy",
+        "ownerManagedAccess": True,
+    }
+    resource_no_policy = uma.resource_set_create(resource_without_a_policy)
+
+    permissions = [UMAPermission(resource=resource_without_a_policy["name"])]
+    assert not uma.permissions_check(token["access_token"], permissions)
+
     uma.resource_set_delete(resource["_id"])
+    uma.resource_set_delete(resource_no_policy["_id"])
 
 
 def test_uma_permission_ticket(uma: KeycloakUMA) -> None:
