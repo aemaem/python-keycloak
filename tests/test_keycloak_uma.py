@@ -622,7 +622,7 @@ async def test_a_uma_access(uma: KeycloakUMA) -> None:
     assert await uma.a_permissions_check(token["access_token"], permissions)
 
     permissions = [UMAPermission(resource="not valid")]
-    assert not await uma.permissions_check(token["access_token"], permissions)
+    assert not await uma.a_permissions_check(token["access_token"], permissions)
 
     resource_without_a_policy = {
         "name": "test_without_policy",
