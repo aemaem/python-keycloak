@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import json
 from typing import TYPE_CHECKING, Any
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import quote_plus
 
 from .connection import ConnectionManager
 from .exceptions import (
@@ -451,7 +451,7 @@ class KeycloakUMA:
 
         if extra_payload and isinstance(extra_payload, dict):
             for k, v in extra_payload.items():
-                payload.append((k, urlencode(v)))
+                payload.append((k, v))
         elif extra_payload:
             msg = "Attribute extra_payload needs to be of type dict."
             raise AttributeError(msg)
@@ -953,7 +953,7 @@ class KeycloakUMA:
 
         if extra_payload and isinstance(extra_payload, dict):
             for k, v in extra_payload.items():
-                payload.append((k, urlencode(v)))
+                payload.append((k, v))
         elif extra_payload:
             msg = "Attribute extra_payload needs to be of type dict."
             raise AttributeError(msg)
